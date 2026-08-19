@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import {
   Plus, Search, Filter, Pencil,
-  Trash2, ChevronLeft, ChevronRight, X,
+  Trash2, ChevronLeft, ChevronRight, X, Sparkles,
 } from "lucide-react";
 import { transactionApi, categoryApi } from "../../api/transactionApi";
+import { aiApi } from "../../api/aiApi";
 import { formatCurrency, formatDate }  from "../../utils/formatters";
 import Modal      from "../../components/common/Modal";
 import Spinner    from "../../components/common/Spinner";
@@ -25,6 +26,40 @@ function TransactionForm({
 }) {
   const [form,   setForm]   = useState(initial ?? EMPTY_FORM);
   const [errors, setErrors] = useState({});
+  const [aiSuggestion, setAiSuggestion] = useState(null);
+  const [suggestLoading, setSuggestLoading] = useState(false);
+
+  // Auto-suggest category when note changes
+  useEffect(() => {
+    if (!form.note || form.note.length < 3) {
+      setAiSuggestion(null);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        setSuggestLoading(true);
+        const res = await aiApi.categorize(form.note, form.amount);
+        const suggestedName = res.data?.data?.suggestedCategory;
+        if (suggestedName) {
+          const matchedCat = categories.find(
+            (c) => c.name.toLowerCase() === suggestedName.toLowerCase()
+          );
+          if (matchedCat && matchedCat.id !== Number(form.categoryId)) {
+            setAiSuggestion(matchedCat);
+          } else {
+            setAiSuggestion(null);
+          }
+        }
+      } catch (err) {
+        console.error("AI categorize failed:", err);
+      } finally {
+        setSuggestLoading(false);
+      }
+    }, 800); // Debounce 800ms
+
+    return () => clearTimeout(timer);
+  }, [form.note, form.amount, categories, form.categoryId]);
 
   const validate = () => {
     const e = {};
@@ -41,6 +76,14 @@ function TransactionForm({
   const handleChange = (field) => (e) => {
     setForm((p) => ({ ...p, [field]: e.target.value }));
     if (errors[field]) setErrors((p) => ({ ...p, [field]: null }));
+  };
+
+  const applySuggestion = () => {
+    if (aiSuggestion) {
+      setForm((p) => ({ ...p, categoryId: String(aiSuggestion.id) }));
+      setAiSuggestion(null);
+      if (errors.categoryId) setErrors((p) => ({ ...p, categoryId: null }));
+    }
   };
 
   const handleSubmit = (e) => {
@@ -128,6 +171,42 @@ function TransactionForm({
         )}
         {errors.categoryId && (
           <p className="text-red-500 text-xs mt-1">{errors.categoryId}</p>
+        )}
+        
+        {/* AI Suggestion */}
+        {suggestLoading && (
+          <div className="mt-2 flex items-center gap-2 text-xs text-blue-600">
+            <Sparkles className="w-3 h-3 animate-pulse" />
+            <span>AI đang phân tích...</span>
+          </div>
+        )}
+        {aiSuggestion && !suggestLoading && (
+          <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm">
+                <Sparkles className="w-4 h-4 text-blue-600" />
+                <span className="text-gray-700">
+                  AI gợi ý: <strong>{aiSuggestion.icon} {aiSuggestion.name}</strong>
+                </span>
+              </div>
+              <div className="flex gap-1">
+                <button
+                  type="button"
+                  onClick={applySuggestion}
+                  className="px-3 py-1 text-xs font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded transition-colors"
+                >
+                  Áp dụng
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAiSuggestion(null)}
+                  className="px-2 py-1 text-xs text-gray-600 hover:text-gray-800 rounded"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
 

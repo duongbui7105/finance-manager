@@ -8,12 +8,13 @@ import { AiChatDrawer, SmartInputModal } from './finmanager/AiPanel';
 import { DashboardScreen, TransactionsScreen, BudgetsScreen, GoalsScreen } from './finmanager/ScreensMain';
 import { AccountsScreen, ReportsScreen, InsightsScreen, ProfileScreen, SecurityScreen, AuthScreen } from './finmanager/ScreensExtra';
 import { MarketScreen } from './finmanager/MarketScreen';
+import CategoriesPage from './pages/categories/CategoriesPage';
 import { FM_DATA, FM_FMT } from './finmanager/data';
 import { notificationApi } from './api/notificationApi';
 
 const ROUTES = [
   'dashboard','transactions','budgets','goals','accounts',
-  'reports','insights','market','profile','security','auth'
+  'reports','insights','market','categories','profile','security','auth'
 ];
 
 export default function App() {
@@ -156,6 +157,7 @@ export default function App() {
           {route === 'reports'      && <ReportsScreen      {...screenProps}/>}
           {route === 'insights'     && <InsightsScreen     {...screenProps}/>}
           {route === 'market'       && <MarketScreen       {...screenProps}/>}
+          {route === 'categories'   && <CategoriesPage />}
           {route === 'profile'      && <ProfileScreen      {...screenProps}/>}
           {route === 'security'     && <SecurityScreen     {...screenProps}/>}
         </div>
@@ -204,6 +206,7 @@ function routeTitle(route, t) {
     reports:      'nav.reports',
     insights:     'nav.insights',
     market:       'nav.market',
+    categories:   'nav.categories',
     profile:      'nav.profile',
     security:     'nav.security',
   };

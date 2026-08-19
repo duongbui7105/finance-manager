@@ -55,4 +55,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
            "WHERE t.user.id = :userId AND t.type = :type")
     BigDecimal sumByUserIdAndType(@Param("userId") Long userId,
                                    @Param("type") TransactionType type);
+
+    // Count transactions using a specific category
+    long countByCategoryId(Long categoryId);
 }

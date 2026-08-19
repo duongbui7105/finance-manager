@@ -246,41 +246,72 @@ function RecoverForm({ onSwitch }) {
 // ACCOUNTS SCREEN
 // ─────────────────────────────────────────────────────────────
 export function AccountsScreen({ onOpenTxn }) {
-  const d = FM_DATA;
-  const fmt = FM_FMT;
+  const { t } = useTranslation();
+  const [accounts, setAccounts] = xS([]);
+  const [summary, setSummary] = xS(null);
+  const [loading, setLoading] = xS(true);
   const [selected, setSelected] = xS(null);
   const [filter, setFilter] = xS('all');
+  const fmt = FM_FMT;
+
+  // Fetch accounts and summary
+  xE(() => {
+    Promise.all([
+      import('../api/accountApi').then(m => m.accountApi.getAll()),
+      import('../api/accountApi').then(m => m.accountApi.getSummary()),
+    ]).then(([accRes, sumRes]) => {
+      setAccounts(accRes.data?.data || []);
+      setSummary(sumRes.data?.data || {});
+    }).catch(err => {
+      console.error('Failed to fetch accounts:', err);
+      // Fallback to mock data
+      setAccounts(FM_DATA.accounts);
+      setSummary({
+        totalBalance: FM_DATA.accounts.reduce((s, a) => s + a.balance, 0),
+        assets: FM_DATA.accounts.filter(a => a.balance > 0).reduce((s, a) => s + a.balance, 0),
+        liabilities: FM_DATA.accounts.filter(a => a.balance < 0).reduce((s, a) => s + Math.abs(a.balance), 0),
+        netWorth: FM_DATA.accounts.reduce((s, a) => s + a.balance, 0),
+      });
+    }).finally(() => setLoading(false));
+  }, []);
 
   const typeFilters = [
     { value: 'all', label: 'All' },
-    { value: 'checking', label: 'Checking' },
-    { value: 'savings', label: 'Savings' },
-    { value: 'credit', label: 'Credit' },
-    { value: 'investment', label: 'Investment' },
-    { value: 'cash', label: 'Cash' },
-    { value: 'loan', label: 'Loans' },
+    { value: 'CHECKING', label: 'Checking' },
+    { value: 'SAVINGS', label: 'Savings' },
+    { value: 'CREDIT', label: 'Credit' },
+    { value: 'INVESTMENT', label: 'Investment' },
+    { value: 'CASH', label: 'Cash' },
+    { value: 'LOAN', label: 'Loans' },
   ];
 
-  const visible = filter === 'all' ? d.accounts : d.accounts.filter(a => a.type === filter);
-  const totalAssets = d.accounts.filter(a => a.balance > 0).reduce((s, a) => s + a.balance, 0);
-  const totalLiab = d.accounts.filter(a => a.balance < 0).reduce((s, a) => s + Math.abs(a.balance), 0);
-  const netWorth = totalAssets - totalLiab;
+  const visible = filter === 'all' ? accounts : accounts.filter(a => a.type === filter);
+  const totalAssets = summary?.assets || 0;
+  const totalLiab = summary?.liabilities || 0;
+  const netWorth = summary?.netWorth || 0;
 
-  const selAcc = selected ? d.accounts.find(a => a.id === selected) : null;
+  const selAcc = selected ? accounts.find(a => a.id === selected) : null;
   const selTxns = xM(() => {
     if (!selected) return [];
-    return d.txns.filter(t => t.account === selected).slice(0, 30);
+    // In real app, fetch transactions for this account
+    return FM_DATA.txns.filter(t => t.account === selected).slice(0, 30);
   }, [selected]);
 
-  const typeLabel = { checking: 'Checking', savings: 'Savings', credit: 'Credit Card', investment: 'Investment', cash: 'Cash / Wallet', loan: 'Loan' };
+  const typeLabel = { CHECKING: 'Checking', SAVINGS: 'Savings', CREDIT: 'Credit Card', INVESTMENT: 'Investment', CASH: 'Cash / Wallet', LOAN: 'Loan' };
+
+  if (loading) {
+    return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 400 }}>
+      <div className="fm-spinner"/>
+    </div>;
+  }
 
   return (
     <div className="fm-fadein fm-rise" style={{ display: 'grid', gap: 'var(--fm-gap, 16px)' }}>
       {/* Summary row */}
       <div className="fm-grid cols-3">
-        <StatCard label="Total Assets" value={totalAssets} delta={+17_040_000} deltaLabel="this month"/>
-        <StatCard label="Total Liabilities" value={-totalLiab} delta={+6_880_000} deltaLabel="this month" sparkColor="#f97316"/>
-        <StatCard label="Net Worth" value={netWorth} delta={+10_160_000} deltaLabel="this month" sparkColor="#10b981"/>
+        <StatCard label="Total Assets" value={totalAssets} sparkColor="#10b981"/>
+        <StatCard label="Total Liabilities" value={-totalLiab} sparkColor="#f97316"/>
+        <StatCard label="Net Worth" value={netWorth} sparkColor="#10b981"/>
       </div>
 
       {/* Filter bar */}
@@ -292,40 +323,52 @@ export function AccountsScreen({ onOpenTxn }) {
       </div>
 
       {/* Accounts grid */}
-      <div className="fm-grid cols-3">
-        {visible.map(acc => (
-          <div key={acc.id} className="fm-card" style={{ cursor: 'pointer', outline: selected === acc.id ? `2px solid ${acc.color}` : 'none', transition: 'outline 0.15s' }}
-            onClick={() => setSelected(selected === acc.id ? null : acc.id)}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div>
-                <div style={{ width: 10, height: 10, borderRadius: '50%', background: acc.color, display: 'inline-block', marginRight: 8 }}/>
-                <span style={{ fontWeight: 600, fontSize: 14 }}>{acc.name}</span>
+      {visible.length === 0 ? (
+        <div className="fm-card" style={{ textAlign: 'center', padding: 40, color: 'var(--fm-text-muted)' }}>
+          <div style={{ fontSize: 48, marginBottom: 12 }}>🏦</div>
+          <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>No accounts yet</div>
+          <div style={{ fontSize: 14 }}>Create your first account to start tracking your finances</div>
+        </div>
+      ) : (
+        <div className="fm-grid cols-3">
+          {visible.map(acc => {
+            const accColor = acc.color || '#6366f1';
+            const accBalance = acc.balance || 0;
+            return (
+              <div key={acc.id} className="fm-card" style={{ cursor: 'pointer', outline: selected === acc.id ? `2px solid ${accColor}` : 'none', transition: 'outline 0.15s' }}
+                onClick={() => setSelected(selected === acc.id ? null : acc.id)}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div>
+                    <div style={{ width: 10, height: 10, borderRadius: '50%', background: accColor, display: 'inline-block', marginRight: 8 }}/>
+                    <span style={{ fontWeight: 600, fontSize: 14 }}>{acc.name}</span>
+                  </div>
+                  <span style={{ fontSize: 11, color: 'var(--fm-text-muted)', background: 'var(--fm-surface-raised)', padding: '2px 8px', borderRadius: 99 }}>
+                    {typeLabel[acc.type] ?? acc.type}
+                  </span>
+                </div>
+                <div style={{ marginTop: 16 }}>
+                  <div style={{ fontFamily: 'var(--fm-font-display)', fontSize: 24, fontWeight: 700, letterSpacing: '-0.02em', color: accBalance < 0 ? '#f97316' : 'var(--fm-text)' }}>
+                    {fmt.vnd(accBalance, { compact: true })} <span style={{ fontSize: 14, color: 'var(--fm-text-muted)' }}>₫</span>
+                  </div>
+                </div>
+                {acc.description && (
+                  <div style={{ marginTop: 12, fontSize: 12, color: 'var(--fm-text-muted)' }}>{acc.description}</div>
+                )}
               </div>
-              <span style={{ fontSize: 11, color: 'var(--fm-text-muted)', background: 'var(--fm-surface-raised)', padding: '2px 8px', borderRadius: 99 }}>{typeLabel[acc.type] ?? acc.type}</span>
-            </div>
-            <div style={{ marginTop: 16 }}>
-              <div style={{ fontFamily: 'var(--fm-font-display)', fontSize: 24, fontWeight: 700, letterSpacing: '-0.02em', color: acc.balance < 0 ? '#f97316' : 'var(--fm-text)' }}>
-                {fmt.vnd(acc.balance, { compact: true })} <span style={{ fontSize: 14, color: 'var(--fm-text-muted)' }}>₫</span>
-              </div>
-              <div style={{ display: 'flex', gap: 8, marginTop: 6, alignItems: 'center' }}>
-                <span className={`fm-stat-delta ${acc.change >= 0 ? 'pos' : 'neg'}`} style={{ fontSize: 12 }}>
-                  {acc.change >= 0 ? '↑' : '↓'} {fmt.vnd(Math.abs(acc.change), { compact: true })} ₫
-                </span>
-                <span style={{ color: 'var(--fm-text-muted)', fontSize: 12 }}>this month</span>
-              </div>
-            </div>
-            <div style={{ marginTop: 12, fontSize: 12, color: 'var(--fm-text-muted)' }}>{acc.institution} ···{acc.last4}</div>
-          </div>
-        ))}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Account detail panel */}
       {selAcc && (
-        <div className="fm-card fm-fadein" style={{ borderTop: `3px solid ${selAcc.color}` }}>
+        <div className="fm-card fm-fadein" style={{ borderTop: `3px solid ${selAcc.color || '#6366f1'}` }}>
           <div className="fm-card-h">
             <div>
               <h3>{selAcc.name}</h3>
-              <div style={{ color: 'var(--fm-text-muted)', fontSize: 13, marginTop: 4 }}>{selAcc.institution} · Account ···{selAcc.last4}</div>
+              <div style={{ color: 'var(--fm-text-muted)', fontSize: 13, marginTop: 4 }}>
+                {typeLabel[selAcc.type] || selAcc.type} · {selAcc.currency || 'VND'}
+              </div>
             </div>
             <button className="fm-btn fm-btn-ghost" style={{ fontSize: 18, padding: '4px 8px' }} onClick={() => setSelected(null)}>×</button>
           </div>
