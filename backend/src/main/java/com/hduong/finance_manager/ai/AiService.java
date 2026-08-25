@@ -44,7 +44,7 @@ public class AiService {
     @Value("${gemini.api.key:}")
     private String apiKey;
 
-    @Value("${gemini.api.model:gemini-2.0-flash}")
+    @Value("${gemini.api.model:gemini-3.6-flash}")
     private String model;
 
     @Value("${gemini.api.max-tokens:1000}")
@@ -152,11 +152,12 @@ public class AiService {
                 "contents", List.of(Map.of("parts", List.of(Map.of("text", fullPrompt)))),
                 "generationConfig", Map.of("maxOutputTokens", maxTokens, "temperature", 0.7));
 
-        String url = "/" + model + ":generateContent?key=" + apiKey;
+        String url = "/" + model + ":generateContent";
 
         Map<String, Object> response = openAiWebClient.post()
                 .uri(url)
                 .header("Content-Type", "application/json")
+                .header("x-goog-api-key", apiKey)
                 .bodyValue(requestBody)
                 .retrieve()
                 .onStatus(
@@ -347,11 +348,12 @@ public class AiService {
         ensureKeyConfigured();
         log.info("Smart input parse — text length: {}", text.length());
 
-        String url = "/" + model + ":generateContent?key=" + apiKey;
+        String url = "/" + model + ":generateContent";
 
         Map response = openAiWebClient.post()
                 .uri(url)
                 .header("Content-Type", "application/json")
+                .header("x-goog-api-key", apiKey)
                 .bodyValue(Map.of(
                         "contents", List.of(Map.of("parts", List.of(Map.of("text", buildParsePrompt(text))))),
                         "generationConfig", Map.of("maxOutputTokens", 2000, "temperature", 0.1)))
@@ -407,11 +409,12 @@ public class AiService {
                 """, today, today);
 
         String mime = (mimeType != null && !mimeType.isBlank()) ? mimeType : "image/jpeg";
-        String url  = "/" + model + ":generateContent?key=" + apiKey;
+        String url  = "/" + model + ":generateContent";
 
         Map response = openAiWebClient.post()
                 .uri(url)
                 .header("Content-Type", "application/json")
+                .header("x-goog-api-key", apiKey)
                 .bodyValue(Map.of(
                         "contents", List.of(Map.of("parts", List.of(
                                 Map.of("text", prompt),

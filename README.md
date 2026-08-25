@@ -1,293 +1,383 @@
-# FinManager - Nền Tảng Quản Lý Tài Chính Cá Nhân
+# Finance Manager — Personal Finance Management Platform
 
-Ứng dụng web toàn bộ (full-stack) để quản lý tài chính cá nhân với các tính năng phân tích dữ liệu bằng AI, theo dõi ngân sách, quản lý mục tiêu tài chính và thông tin thị trường.
+Ứng dụng web quản lý tài chính cá nhân với AI-powered analytics, theo dõi ngân sách, mục tiêu tiết kiệm, và thông tin thị trường theo thời gian thực.
 
-**Truy cập**: http://localhost:5173
+## Tính năng
 
----
+### Bắt buộc
+- **Quản lý giao dịch** — Ghi lại thu/chi với danh mục, ghi chú, ngày tháng
+- **Dashboard tổng quan** — Hiển thị tổng thu, chi, số dư, biểu đồ xu hướng theo thời gian thực
+- **Mục tiêu tiết kiệm** — Đặt mục tiêu tài chính, theo dõi tiến độ với thanh progress bar
+- **Quản lý tài khoản** — Hỗ trợ nhiều loại tài khoản (tiền mặt, tiết kiệm, đầu tư, thẻ tín dụng, v.v.)
+- **Ngân sách** — Tạo ngân sách theo danh mục với cảnh báo chi tiêu quá mức
+- **Báo cáo tài chính** — Biểu đồ, xu hướng, phân tích theo khoảng thời gian tùy chỉnh
+- **Xác thực bảo mật** — JWT-based authentication với Spring Security
 
-## Các Tính Năng
+### Nâng cao
+- **AI Chat (FinBot)** — Trợ lý tài chính thông minh với Google Gemini AI
+  - Phân tích dữ liệu tài chính cá nhân
+  - Đưa ra lời khuyên tiết kiệm, cảnh báo chi tiêu
+  - Hỏi đáp về tình hình tài chính bằng tiếng Việt
+- **Smart Input** — Nhập giao dịch bằng ngôn ngữ tự nhiên
+  - Ví dụ: "Ăn phở 40k sáng nay" → tự động parse thành giao dịch
+  - Hỗ trợ nhiều giao dịch trong 1 câu
+- **Auto-categorize** — AI tự động phân loại giao dịch dựa trên mô tả
+- **Scan Receipt** — Quét hóa đơn/biên lai từ ảnh, trích xuất tất cả mặt hàng
+- **AI Insights** — Phân tích chi tiêu, nhận xét tổng quan, gợi ý cải thiện
+- **Thông tin thị trường** — Theo dõi giá tiền điện tử, kim loại quý, ngoại hối theo thời gian thực
+- **Đa ngôn ngữ** — Tiếng Việt & English (i18next)
+- **Dark/Light mode** — Chủ đề tùy chỉnh với transition mượt
+- **Responsive design** — Hoạt động tốt trên mobile & desktop
 
-### Quản Lý Tài Chính Cơ Bản
-- Theo dõi Giao Dịch: Ghi lại thu chi với danh mục và ghi chú
-- Bảng Điều Khiển: Xem tổng quan thu chi, tài sản ròng theo thời gian thực
-- Mục Tiêu Tiết Kiệm: Đặt và theo dõi mục tiêu tài chính với trực quan hóa tiến độ
-- Quản Lý Tài Khoản: Quản lý nhiều tài khoản (tiền gửi, tiết kiệm, đầu tư, v.v.)
-- Lập Kế Hoạch Ngân Sách: Tạo và giám sát ngân sách với cảnh báo chi quá mức
-
-### Phân Tích & Thông Tin Chi Tiết
-- Báo Cáo: Báo cáo tài chính toàn diện với biểu đồ và xu hướng
-- Thông Tin Thông Minh: Phân tích chi tiêu và đề xuất được hỗ trợ bởi AI
-- Xu Hướng Giao Dịch: Trực quan hóa mô hình chi tiêu theo thời gian
-- Thông Tin Thị Trường: Theo dõi dữ liệu thị trường theo thời gian thực (tiền điện tử, kim loại quý, ngoại hối)
-
-### Tính Năng AI
-- Trợ Lý Chat AI: Nhận lời khuyên tài chính được cá nhân hóa thông qua Gemini AI
-- Nhập Liệu Thông Minh: Nhập giao dịch bằng ngôn ngữ tự nhiên (ví dụ "chi 50k cho cà phê")
-- Phân Tích Chi Tiêu: Thông tin chi tiết được tạo bởi AI từ lịch sử giao dịch của bạn
-
-### Trải Nghiệm Người Dùng
-- Chế Độ Tối/Sáng: Tùy chỉnh giao diện
-- Hỗ Trợ Đa Ngôn Ngữ: Tiếng Việt và Tiếng Anh
-- Thiết Kế Đáp Ứng: Hoạt động trên máy tính và thiết bị di động
-- Xác Thực Bảo Mật: Xác thực dựa trên JWT
-
----
-
-## Công Nghệ Sử Dụng
-
-### Backend
-- Runtime: Java 21
-- Framework: Spring Boot 3.5.14
-- Cơ Sở Dữ Liệu: H2 (trong bộ nhớ cho phát triển)
-- Bảo Mật: JWT, Spring Security
-- API: RESTful với Spring Web
-- ORM: JPA/Hibernate
-- Build: Gradle
-
-### Frontend
-- Framework: React 18
-- Build Tool: Vite
-- CSS: Tailwind CSS + Hệ Thống Thiết Kế Tùy Chỉnh
-- State Management: React Context (Auth, Theme)
-- HTTP Client: Axios
-- Quốc Tế Hóa: i18next
-- Biểu Đồ: Biểu đồ tùy chỉnh dựa trên canvas
-
-### Dịch Vụ Bên Ngoài
-- AI: Google Gemini API (chat & insights)
-- Dữ Liệu Thị Trường: metals.live API (kim loại quý), cryptocompare API (tiền điện tử)
+### Yêu cầu phi chức năng
+- **Kiến trúc tách lớp**:
+  - Backend: `controller/` (REST) ↔ `service/` (business logic) ↔ `repository/` (data)
+  - Frontend: `api/` (data) ↔ `pages/` (UI) ↔ `components/` (reusable)
+- **Lưu trữ**: H2 file-based database (persistent storage), dễ dàng migrate sang MySQL/PostgreSQL
+- **Demo**: Dữ liệu mẫu sẵn với 2 user test
 
 ---
 
-## Yêu Cầu Cần Thiết
+## Cài đặt & chạy
 
-- Java 21 - Tải từ [Microsoft JDK](https://www.microsoft.com/openjdk)
-- Node.js 18+ - Cho phát triển frontend
-- Git - Kiểm soát phiên bản
+### Yêu cầu
+- **Java 21+** — [Tải Microsoft JDK](https://www.microsoft.com/openjdk)
+- **Node.js 18+** — [Tải Node.js](https://nodejs.org/)
+- Khoảng 200 MB dung lượng
 
----
-
-## Hướng Dẫn Bắt Đầu Nhanh
-
-### 1. Clone và Cài Đặt
+### Backend (Spring Boot)
 
 ```bash
-# Clone kho lưu trữ
-git clone https://github.com/hduong/finance-manager.git
-cd finance-manager
+cd backend
+.\gradlew.bat bootRun
+```
 
-# Cài đặt phụ thuộc frontend
-cd finance-manager-ui
+> **Lần đầu chạy** mất ~30 giây để Gradle tải dependencies và khởi động Spring Boot.
+> Sau khi backend sẵn sàng sẽ in:
+> ```
+> Started FinanceManagerApplication in 9.142 seconds
+> ✅ Initialized 2 test users:
+>    - test@gmail.com / 123456 (USER)
+>    - admin@gmail.com / admin123 (ADMIN)
+> ```
+
+**Backend sẵn sàng tại:** http://localhost:8081
+
+### Frontend (React + Vite)
+
+Mở terminal mới:
+
+```bash
+cd frontend
 npm install
-```
-
-### 2. Chạy Backend
-
-```bash
-# Từ thư mục dự án: finance-manager/
-$env:JAVA_HOME='C:\Program Files\Microsoft\jdk-21.0.12.8-hotspot'
-./gradlew.bat bootRun
-```
-
-Backend chạy tại: http://localhost:8081/api
-
-### 3. Chạy Frontend
-
-```bash
-# Từ thư mục finance-manager-ui/
 npm run dev
 ```
+> ```
+> VITE v8.0.8  ready in 1331 ms
+> ➜  Local:   http://localhost:5173/
+> ```
 
-Frontend chạy tại: http://localhost:5173
-
-### 4. Truy Cập Ứng Dụng
-
-Mở trình duyệt và truy cập: http://localhost:5173
-
----
-
-## Cách Sử Dụng
-
-### Tạo Tài Khoản
-1. Nhấn "Create one" trên trang đăng nhập
-2. Nhập: Tên Đầy Đủ, Email, Mật Khẩu (tối thiểu 6 ký tự)
-3. Nhấn "Create account"
-
-### Tổng Quan Bảng Điều Khiển
-- Thẻ Tóm Tắt: Tổng thu, chi và tài sản ròng
-- Giao Dịch Gần Đây: 5 giao dịch mới nhất
-- Biểu Đồ: Xu hướng hàng tháng và phân chia danh mục
-- Thao Tác Nhanh: Thêm giao dịch, xem báo cáo
-
-### Thêm Giao Dịch
-1. Nhấn nút "+" (Thêm Nhanh)
-2. Nhập số tiền, danh mục, ngày, ghi chú
-3. Chọn loại (Thu Nhập/Chi Tiêu)
-4. Lưu
-
-### Sử Dụng Tính Năng AI
-- AI Chat: Nhấn biểu tượng chat để nhận lời khuyên tài chính
-- Nhập Thông Minh: Nhấn biểu tượng nhập thông minh và mô tả giao dịch một cách tự nhiên
-- Thông Tin Chi Tiết: Bảng điều khiển hiển thị thông tin chi tiêu được tạo bởi AI
-
-### Quản Lý Tài Chính
-- Ngân Sách: Đặt giới hạn hàng tháng cho mỗi danh mục
-- Mục Tiêu: Tạo mục tiêu tiết kiệm với thời hạn
-- Báo Cáo: Xem báo cáo tài chính chi tiết theo khoảng thời gian
-- Tài Khoản: Tổ chức giao dịch theo loại tài khoản
+**Mở trình duyệt:** http://localhost:5173
 
 ---
 
-## Cấu Trúc Dự Án
+## Cấu trúc thư mục
 
 ```
-finance-manager/
-├── src/main/java/com/hduong/finance_manager/
-│   ├── controller/          # Điểm cuối REST API
-│   ├── service/             # Logic kinh doanh
-│   ├── repository/          # Truy vấn cơ sở dữ liệu (JPA)
-│   ├── entity/              # Thực thể JPA
-│   ├── dto/                 # Đối tượng chuyển dữ liệu
-│   ├── security/            # JWT, cấu hình xác thực
-│   ├── exception/           # Ngoại lệ tùy chỉnh
-│   ├── config/              # Cấu hình Spring (CORS, Lập Lịch, WebClient)
-│   └── ai/                  # Tích hợp Gemini AI
-├── src/main/resources/
-│   └── application.properties  # Cấu hình
-├── build.gradle             # Cấu hình Gradle build
-└── gradle/                  # Gradle wrapper
-
-finance-manager-ui/
-├── src/
-│   ├── api/                 # Khách hàng Axios (xác thực, giao dịch, v.v.)
-│   ├── pages/               # Thành phần trang (Đăng Nhập, Bảng Điều Khiển, Báo Cáo, v.v.)
-│   ├── components/          # Thành phần UI tái sử dụng
-│   ├── context/             # React Context (Auth, Theme)
-│   ├── hooks/               # Hook tùy chỉnh (useAuth, useToast)
-│   ├── finmanager/          # Màn hình ứng dụng chính & dữ liệu
-│   ├── i18n/                # Bản dịch (en.json, vi.json)
-│   ├── App.jsx              # Thành phần gốc với định tuyến
-│   └── main.jsx             # Điểm nhập
-├── index.html               # Mẫu HTML
-├── vite.config.js           # Cấu hình Vite
-├── tailwind.config.js       # Cấu hình Tailwind CSS
-└── package.json             # Phụ thuộc Node
+Project-2-main/
+├── backend/                     # Spring Boot REST API
+│   ├── src/main/java/com/hduong/finance_manager/
+│   │   ├── controller/          # REST endpoints (tách khỏi business logic)
+│   │   │   ├── AuthController.java
+│   │   │   ├── TransactionController.java
+│   │   │   ├── BudgetController.java
+│   │   │   ├── AiController.java
+│   │   │   └── MarketController.java
+│   │   ├── service/             # Business logic layer
+│   │   │   ├── TransactionService.java
+│   │   │   ├── BudgetService.java
+│   │   │   └── ...
+│   │   ├── repository/          # Data access layer (JPA)
+│   │   │   ├── TransactionRepository.java
+│   │   │   ├── UserRepository.java
+│   │   │   └── ...
+│   │   ├── entity/              # JPA entities
+│   │   │   ├── User.java
+│   │   │   ├── Transaction.java
+│   │   │   ├── Category.java
+│   │   │   └── ...
+│   │   ├── dto/                 # Data Transfer Objects
+│   │   ├── security/            # JWT + Spring Security config
+│   │   ├── ai/                  # Gemini AI integration
+│   │   │   ├── AiService.java   #   Chat, insights, smart input, receipt scan
+│   │   │   └── dto/             #   AI request/response DTOs
+│   │   ├── config/              # Spring configs (CORS, WebClient, Scheduler)
+│   │   └── exception/           # Custom exceptions
+│   ├── src/main/resources/
+│   │   └── application.properties  # Config (DB, JWT, Gemini API key)
+│   ├── build.gradle             # Gradle dependencies
+│   └── gradlew.bat              # Gradle wrapper
+│
+└── frontend/                    # React + Vite application
+    ├── src/
+    │   ├── api/                 # Data layer (tách khỏi UI)
+    │   │   ├── axios.js         #   Axios instance với auth interceptor
+    │   │   ├── authApi.js       #   Auth endpoints
+    │   │   ├── transactionApi.js
+    │   │   ├── aiApi.js         #   AI endpoints
+    │   │   └── marketApi.js
+    │   ├── pages/               # UI layer (page components)
+    │   │   ├── auth/            #   Login, Register
+    │   │   ├── dashboard/       #   Dashboard with charts
+    │   │   ├── transactions/    #   Transaction list & form
+    │   │   ├── ai/              #   AI Chat page
+    │   │   ├── reports/         #   Financial reports
+    │   │   └── ...
+    │   ├── components/          # Reusable UI components
+    │   │   ├── Navbar.jsx
+    │   │   ├── Chart.jsx
+    │   │   └── ...
+    │   ├── context/             # React Context (Auth, Theme)
+    │   │   ├── AuthContext.jsx
+    │   │   └── ThemeContext.jsx
+    │   ├── hooks/               # Custom hooks
+    │   ├── i18n/                # Internationalization
+    │   │   ├── en.json
+    │   │   └── vi.json
+    │   ├── finmanager/          # Main app screens & data
+    │   ├── App.jsx              # Root component with routing
+    │   └── main.jsx             # Entry point
+    ├── index.html
+    ├── vite.config.js           # Vite config (proxy /api → :8081)
+    ├── tailwind.config.js       # Tailwind CSS config
+    └── package.json
 ```
+
+## Chi tiết tính năng AI
+
+### Gemini AI Integration (`backend/ai/AiService.java`)
+- **Model**: `gemini-3.6-flash` (nhanh, hiệu quả, multimodal hỗ trợ vision)
+- **API**: Google Generative AI REST API
+- **Auth**: Header `x-goog-api-key` (API keys với prefix `AQ.` từ AI Studio)
+- **Max tokens**: 1000 (chat/insights), 2000 (smart input/receipt scan)
+
+### 1. AI Chat (`/ai/chat`)
+- Nhận câu hỏi từ user
+- Build context với dữ liệu tài chính thực (20 giao dịch gần nhất, tổng thu/chi, số dư)
+- Gọi Gemini với system prompt = "FinBot trợ lý tài chính"
+- Trả về lời khuyên bằng tiếng Việt (3-5 câu)
+
+### 2. AI Insights (`/ai/insights`)
+- Tự động phân tích không cần prompt từ user
+- Prompt cố định: "Nhận xét tổng quan + điểm cần cải thiện + 1 lời khuyên tiết kiệm"
+- Dựa vào dữ liệu tháng hiện tại + lịch sử
+
+### 3. Smart Input (`/ai/smart-input`)
+- Parse ngôn ngữ tự nhiên → JSON transactions
+- Hỗ trợ: "40k", "1.5tr" → convert sang số
+- Tự động gán category dựa trên từ khóa (Food, Transport, v.v.)
+- Trích xuất nhiều giao dịch từ 1 câu
+
+### 4. Scan Receipt (`/ai/scan-receipt`)
+- Upload ảnh base64 → Gemini Vision API
+- OCR + parse thành structured data
+- Mỗi mặt hàng = 1 transaction riêng
+- Auto-categorize based on item name
+
+### 5. Auto-Categorize (`/ai/categorize`)
+- Input: note + amount (optional)
+- Output: 1 trong 9 categories (Food, Transport, Education, Healthcare, Salary, Shopping, Utilities, Entertainment, Other)
+- Không giải thích, chỉ trả tên category
 
 ---
 
-## Cấu Hình
+## 🔌 API endpoints
 
-### Backend (application.properties)
+**Base URL**: http://localhost:8081
+
+| Endpoint | Method | Mô tả | Auth |
+|---|---|---|---|
+| **Authentication** |
+| `/api/auth/register` | POST | Đăng ký user mới | ❌ |
+| `/api/auth/login` | POST | Đăng nhập (trả về JWT) | ❌ |
+| **Transactions** |
+| `/api/transactions` | GET | Danh sách giao dịch | ✅ |
+| `/api/transactions` | POST | Tạo giao dịch mới | ✅ |
+| `/api/transactions/{id}` | PUT | Cập nhật giao dịch | ✅ |
+| `/api/transactions/{id}` | DELETE | Xóa giao dịch | ✅ |
+| **Categories** |
+| `/api/categories` | GET | Danh sách danh mục | ✅ |
+| `/api/categories` | POST | Tạo danh mục mới | ✅ |
+| **Budgets** |
+| `/api/budgets` | GET | Ngân sách của user | ✅ |
+| `/api/budgets` | POST | Tạo ngân sách | ✅ |
+| `/api/budgets/{id}` | PUT | Cập nhật ngân sách | ✅ |
+| **Savings Goals** |
+| `/api/savings-goals` | GET | Danh sách mục tiêu | ✅ |
+| `/api/savings-goals` | POST | Tạo mục tiêu mới | ✅ |
+| **Reports** |
+| `/api/reports/summary` | GET | Tóm tắt tài chính | ✅ |
+| `/api/reports/trends` | GET | Xu hướng theo thời gian | ✅ |
+| **AI** |
+| `/api/ai/chat` | POST | Chat với FinBot | ✅ |
+| `/api/ai/insights` | GET | Phân tích tự động | ✅ |
+| `/api/ai/categorize` | POST | Tự động phân loại | ✅ |
+| `/api/ai/smart-input` | POST | Parse text → transactions | ✅ |
+| `/api/ai/scan-receipt` | POST | OCR hóa đơn | ✅ |
+| **Market Data** |
+| `/api/market/crypto` | GET | Giá tiền điện tử | ✅ |
+| `/api/market/precious-metals` | GET | Giá vàng, bạc | ✅ |
+| `/api/market/forex` | GET | Tỷ giá ngoại tệ | ✅ |
+
+**Docs đầy đủ**: http://localhost:8081/swagger-ui.html (nếu đã bật Swagger)
+
+---
+
+## ⚙️ Cấu hình
+
+### Backend (`backend/src/main/resources/application.properties`)
 
 ```properties
+# Database (H2 file-based persistent storage)
+spring.datasource.url=jdbc:h2:file:./data/finance_manager_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+spring.datasource.username=sa
+spring.datasource.password=
+spring.datasource.driver-class-name=org.h2.Driver
+
+# JPA / Hibernate
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+
+# App port
 server.port=8081
-spring.datasource.url=jdbc:h2:mem:finance_manager_db
 
 # JWT
-jwt.secret=<khóa-bí-mật-của-bạn>
-jwt.expiration=86400000  # 24 giờ
+jwt.secret=<your-secret-key>
+jwt.expiration=86400000  # 24 hours
 
 # CORS
-cors.allowed-origins=http://localhost:5173,http://localhost:5174,http://localhost:3000
+cors.allowed-origins=http://localhost:5173,http://localhost:5174,http://localhost:4173,http://127.0.0.1:5173
 
-# AI (Gemini)
-gemini.api.key=<khóa-api-gemini-của-bạn>
-gemini.api.model=gemini-2.5-flash
+# Gemini AI (New format with AQ. prefix)
+gemini.api.key=${GEMINI_API_KEY:AQ.YourKeyFromAIStudio}
+gemini.api.url=https://generativelanguage.googleapis.com/v1beta/models
+gemini.api.model=gemini-3.6-flash
+gemini.api.max-tokens=1000
 ```
 
-### Frontend (vite.config.js)
+> **⚠️ QUAN TRỌNG — Gemini API Key mới:**
+> - Google AI Studio hiện sử dụng API keys prefix `AQ.` (VD: `AQ.Ab8RN6K...`)
+> - **PHẢI gửi qua header `x-goog-api-key`**, KHÔNG được dùng query param `?key=`
+> - Lấy key mới tại: https://aistudio.google.com/app/apikey
+> - Backend đã tự động xử lý header cho tất cả AI endpoints
+> - Đặt biến môi trường: `$env:GEMINI_API_KEY="AQ.your-key"` (Windows PowerShell)
+
+### Frontend (`frontend/vite.config.js`)
 
 ```javascript
-// vite.config.js
-export default {
+export default defineConfig({
   server: {
+    port: 5173,
     proxy: {
-      '/api': 'http://localhost:8081'
+      '/api': {
+        target: 'http://localhost:8081',
+        changeOrigin: true,
+      }
     }
   }
-}
+})
 ```
 
 ---
 
-## Xác Thực
+## ⚠ Lưu ý
 
-Sử dụng JWT (JSON Web Tokens) để xác thực không trạng thái:
+### 1. Gemini API Key
+- **Bắt buộc** để chạy tính năng AI
+- **Format mới**: Google AI Studio hiện sử dụng keys với prefix `AQ.` (VD: `AQ.Ab8RN6K...`)
+- **Authentication**: Keys phải gửi qua header `x-goog-api-key`, KHÔNG dùng query param `?key=`
+- Lấy key miễn phí tại: https://aistudio.google.com/app/apikey
+- Đừng commit key thật vào git — dùng environment variable
+- Backend vẫn chạy được nếu không có key, nhưng AI endpoints sẫ trả lỗi
 
-1. Đăng Ký: POST `/api/auth/register` → Trả về token JWT
-2. Đăng Nhập: POST `/api/auth/login` → Trả về token JWT
-3. Tuyến Được Bảo Vệ: Axios tự động đính kèm token vào các yêu cầu
-4. Lưu Trữ Token: Lưu trữ trong localStorage
-5. Đăng Xuất Tự Động: Phản hồi 401/403 kích hoạt đăng xuất
+### 2. Database H2 file-based
+- **Dữ liệu được LƯU VỮU VIỄN** vào thư mục `./data/finance_manager_db.mv.db`
+- Restart backend → dữ liệu vẫn còn (khác với in-memory cũ)
+- File database tự động tạo lần đầu chạy
+- Để xóa dữ liệu: xóa folder `./data/` và restart
+- Migrate sang MySQL/PostgreSQL: chỉ cần đổi `spring.datasource.url` trong `application.properties`
 
----
+### 3. CORS
+- Backend đã cấu hình CORS cho `localhost:5173`, `5174`, `4173`, `127.0.0.1:5173`
+- Nếu đổi port frontend → thêm vào `cors.allowed-origins`
 
-## Điểm Cuối API
+### 4. JWT Token
+- Token expire sau 24 giờ
+- Frontend tự động refresh khi gọi API
+- 401/403 → auto logout
 
-### Xác Thực
-- POST /api/auth/register - Đăng ký người dùng mới
-- POST /api/auth/login - Đăng nhập người dùng
+### 5. Performance
+- **Smart Input** và **Scan Receipt** mất 2-5 giây (gọi Gemini API)
+- **Market Data** cache 30 giây để tránh spam external APIs
+- Dashboard load nhanh (<500ms) nhờ query tối ưu
 
-### Giao Dịch
-- GET /api/transactions - Danh sách giao dịch người dùng
-- POST /api/transactions - Tạo giao dịch
-- PUT /api/transactions/{id} - Cập nhật giao dịch
-- DELETE /api/transactions/{id} - Xóa giao dịch
-
-### Ngân Sách
-- GET /api/budgets - Danh sách ngân sách
-- POST /api/budgets - Tạo ngân sách
-- PUT /api/budgets/{id} - Cập nhật ngân sách
-
-### Báo Cáo
-- GET /api/reports/summary - Tóm tắt tài chính
-- GET /api/reports/trends - Xu hướng chi tiêu
-
-### AI
-- POST /api/ai/chat - Chat với trợ lý AI
-- POST /api/ai/insights - Nhận thông tin chi tiết về chi tiêu
-
-### Dữ Liệu Thị Trường
-- GET /api/market/data - Tỷ giá thị trường hiện tại
-- GET /api/market/crypto - Giá tiền điện tử
+### 6. Test Users
+- `test@gmail.com` / `123456` — USER role (đầy đủ dữ liệu mẫu)
+- `admin@gmail.com` / `admin123` — ADMIN role
 
 ---
-## Build cho Sản Xuất
 
-### Backend
+## Build cho Production
+
+### Backend (JAR file)
+
 ```bash
-cd finance-manager
-./gradlew.bat build
+cd backend
+.\gradlew.bat clean build
 ```
 
-Kết Quả: `build/libs/finance-manager-x.x.x.jar`
+Kết quả: `backend/build/libs/finance-manager-0.0.1-SNAPSHOT.jar`
 
-### Frontend
+Chạy:
 ```bash
-cd finance-manager-ui
+java -jar build/libs/finance-manager-0.0.1-SNAPSHOT.jar
+```
+
+### Frontend (Static files)
+
+```bash
+cd frontend
 npm run build
 ```
 
-Kết Quả: `dist/` (sẵn sàng triển khai)
+Kết quả: `frontend/dist/` (deploy lên Nginx, Vercel, Netlify, v.v.)
 
 ---
 
-## Triển Khai
+## Tech Stack
 
-### Docker (Được Khuyến Khích)
-```dockerfile
-# Backend Dockerfile
-FROM openjdk:21-slim
-COPY build/libs/finance-manager.jar app.jar
-ENTRYPOINT ["java", "-jar", "app.jar"]
+### Backend
+- **Runtime**: Java 21 (LTS)
+- **Framework**: Spring Boot 3.5.14
+- **Security**: Spring Security + JWT
+- **Database**: H2 (dev), JPA/Hibernate
+- **AI**: Google Gemini 2.5 Flash
+- **Build**: Gradle 8.x
+- **API Style**: RESTful
 
-# Frontend Dockerfile
-FROM node:18-alpine as build
-COPY . .
-RUN npm install && npm run build
-FROM nginx:alpine
-COPY --from=build dist/ /usr/share/nginx/html/
-```
+### Frontend
+- **Framework**: React 18
+- **Build Tool**: Vite 8
+- **Styling**: Tailwind CSS 3
+- **HTTP Client**: Axios
+- **Routing**: React Router v6
+- **State**: React Context API
+- **i18n**: i18next
+- **Charts**: Custom Canvas-based charts
 
+### External APIs
+- **Google Gemini API** — AI chat, insights, smart input, OCR (model: `gemini-3.6-flash`)
+- **CryptoCompare API** — Cryptocurrency prices
+- **metals.live API** — Precious metals (gold, silver)
+
+---
